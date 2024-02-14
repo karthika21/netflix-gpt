@@ -1,12 +1,31 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { BG_IMG } from "../utils/constants";
+import validate from "../utils/validate";
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
+  const [errMsg, setErrMsg] = useState(null);
+
+  const email = useRef(null);
+  const password = useRef(null);
+  const firstName = useRef(null);
+  const lastName = useRef(null);
 
   const toggleSignInForm = () => {
     setIsSignIn(!isSignIn);
+  };
+
+  const handleButtonClick = () => {
+    setErrMsg(
+      validate(
+        email.current.value,
+        password.current.value,
+        firstName?.current?.value,
+        lastName?.current?.value,
+        isSignIn
+      )
+    );
   };
   return (
     <div>
@@ -18,36 +37,49 @@ const Login = () => {
         <h1 className="font-bold text-3xl text-white p-2">
           {isSignIn ? "Sign In" : "Sign up"}
         </h1>
-        <form>
+        {errMsg != undefined && (
+          <div className="p-2 m-2 bg-yellow-600 w-full">
+            <div className="text-black text-center">{errMsg}</div>
+          </div>
+        )}
+
+        <form onSubmit={(e) => e.preventDefault()}>
           <div>
             {!isSignIn && (
+              <input
+                ref={firstName}
+                type="text"
+                placeholder="First Name"
+                className="p-2 m-2 rounded-md w-full bg-transparent border border-solid border-white text-white"
+              />
+            )}
+            {!isSignIn && (
+              <input
+                ref={lastName}
+                type="text"
+                placeholder="Last Name"
+                className="p-2 m-2 rounded-md w-full bg-transparent border border-solid border-white text-white"
+              />
+            )}
             <input
-              type="text"
-              placeholder="First Name"
-              className="p-2 m-2 rounded-md w-full bg-transparent border border-solid border-white"
-            />
-            ) }
-             {!isSignIn && (
-            <input
-              type="text"
-              placeholder="Last Name"
-              className="p-2 m-2 rounded-md w-full bg-transparent border border-solid border-white"
-            />
-            ) }
-            <input
+              ref={email}
               type="text"
               placeholder="Email or phone number"
-              className="p-2 m-2 rounded-md w-full bg-transparent border border-solid border-white"
+              className="p-2 m-2 rounded-md w-full bg-transparent border border-solid border-white text-white "
             />
           </div>
           <div>
             <input
-              type="text"
+              ref={password}
+              type="password"
               placeholder="Password"
-              className="p-2 m-2 rounded-md w-full bg-transparent border border-solid border-white"
+              className="password - p-2 m-2 rounded-md w-full bg-transparent border border-solid border-white  text-white"
             />
           </div>
-          <button className="text-white p-2 m-2 bg-red-600 rounded-sm w-full">
+          <button
+            className="text-white p-2 m-2 bg-red-600 rounded-sm w-full"
+            onClick={handleButtonClick}
+          >
             {isSignIn ? "Sign In" : "Sign up"}
           </button>
           <p className="text-gray-500 p-2 text-center">OR</p>
