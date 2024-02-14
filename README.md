@@ -8,6 +8,11 @@
 - Routing of app
 - Form validations
 - useRef hook
+- Setup Firebase in local
+- Deploying application to production (Firebase)
+- Create Signup user in application using Firebase
+- Implement Sign In user using firebase
+- Created Redux store to manage users using UserSlice
 
 
 # Features

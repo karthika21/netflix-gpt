@@ -2,10 +2,15 @@ import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { BG_IMG } from "../utils/constants";
 import validate from "../utils/validate";
+import { auth } from "../utils/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
-  const [errMsg, setErrMsg] = useState(null);
+  const [validationMsg, setValidationMsg] = useState(null);
 
   const email = useRef(null);
   const password = useRef(null);
@@ -17,15 +22,56 @@ const Login = () => {
   };
 
   const handleButtonClick = () => {
-    setErrMsg(
-      validate(
-        email.current.value,
-        password.current.value,
-        firstName?.current?.value,
-        lastName?.current?.value,
-        isSignIn
-      )
+    const message = validate(
+      email.current.value,
+      password.current.value,
+      firstName?.current?.value,
+      lastName?.current?.value,
+      isSignIn
     );
+    setValidationMsg(message);
+
+    if (message) {
+      return;
+    }
+    //Sign In / Sign Up logic
+    if (!isSignIn) {
+      //Signup
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          setValidationMsg("User Created Successfully");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setValidationMsg(errorCode + "-" + errorMessage);
+        });
+    } else {
+      //signIn
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          setValidationMsg("User Logged In Successfully");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+
+          error.code === 'auth/invalid-credential' ? setValidationMsg("Invalid Credentials") : 
+          setValidationMsg(errorCode + "-" + errorMessage);
+        });
+    }
   };
   return (
     <div>
@@ -37,9 +83,9 @@ const Login = () => {
         <h1 className="font-bold text-3xl text-white p-2">
           {isSignIn ? "Sign In" : "Sign up"}
         </h1>
-        {errMsg != undefined && (
+        {validationMsg != undefined && (
           <div className="p-2 m-2 bg-yellow-600 w-full">
-            <div className="text-black text-center">{errMsg}</div>
+            <div className="text-black text-center">{validationMsg}</div>
           </div>
         )}
 
