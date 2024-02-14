@@ -1,16 +1,22 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
-import { BG_IMG } from "../utils/constants";
+import { BG_IMG, GITHUB_PROFILE } from "../utils/constants";
 import validate from "../utils/validate";
 import { auth } from "../utils/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const [validationMsg, setValidationMsg] = useState(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const email = useRef(null);
   const password = useRef(null);
@@ -45,12 +51,30 @@ const Login = () => {
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
+          updateProfile(user, {
+            displayName: firstName.current.value + " " +lastName.current.value,
+            photoURL: GITHUB_PROFILE,
+          })
+            .then(() => {
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+              navigate("/browse");
+            })
+            .catch((error) => {
+              setValidationMsg(error.code);
+            });
+
           setValidationMsg("User Created Successfully");
         })
         .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          setValidationMsg(errorCode + "-" + errorMessage);
+          setValidationMsg(error.code);
         });
     } else {
       //signIn
@@ -65,11 +89,9 @@ const Login = () => {
           setValidationMsg("User Logged In Successfully");
         })
         .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-
-          error.code === 'auth/invalid-credential' ? setValidationMsg("Invalid Credentials") : 
-          setValidationMsg(errorCode + "-" + errorMessage);
+          error.code === "auth/invalid-credential"
+            ? setValidationMsg("Invalid Credentials")
+            : setValidationMsg(error.code);
         });
     }
   };

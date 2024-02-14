@@ -13,6 +13,8 @@
 - Create Signup user in application using Firebase
 - Implement Sign In user using firebase
 - Created Redux store to manage users using UserSlice
+- Implemented Sign out
+- Update Profile
 
 
 # Features

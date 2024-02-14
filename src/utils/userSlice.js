@@ -1,16 +1,15 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const userSlice = createSlice({
   name: "user",
   initialState: null,
   reducers: {
     addUser: (state, action) => {
-      // Redux Toolkit uses immer BTS
-      state.items.push(action.payload);
+      return action.payload;
     },
     removeUser: (state, action) => {
       return null;
-    }
+    },
   },
 });
 
