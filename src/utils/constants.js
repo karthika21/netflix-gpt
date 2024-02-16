@@ -9,17 +9,26 @@ export const GITHUB_PROFILE =
 
 export const MOVIE_CDN_URL = "https://image.tmdb.org/t/p/w500/";
 
+export const UPCOMING_MOVIE_API = "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1";
+
+export const TOPRATED_MOVIE_API = "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1";
+
+export const POPULAR_MOVIE_API = "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1";
+
+export const NOWPLAYING_MOVIE_API = "https://api.themoviedb.org/3/movie/now_playing?page=1";
+
 export const SUPPORTED_LANG = [
   { identifier: "en", name: "English" },
   { identifier: "spanish", name: "Spanish" },
   { identifier: "tamil", name: "Tamil" },
 ];
 
+export const OPENAI_KEY = process.env.REACT_APP_OPENAI_KEY;
 export const API_OPTIONS = {
   method: "GET",
   headers: {
     accept: "application/json",
     Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4N2Y0ODFkNWJhM2IyZWEzOTYyZDFmZmQ5YTM4ZDAwMyIsInN1YiI6IjY1Y2Q4NDliNTFlNmFiMDE4NjFmNmRkMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ftdl5fARVDccIqdQiMb66SEIyM7y_LIcr1avgv4eyYo",
+      "Bearer " + process.env.REACT_APP_TMDB_KEY,
   },
 };
