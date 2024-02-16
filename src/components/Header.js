@@ -7,20 +7,33 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { addUser, removeUser } from "../utils/userSlice";
 import { useSelector } from "react-redux";
+import { toggleGptSearchView } from "../utils/gptSlice";
+import { SUPPORTED_LANG } from "../utils/constants";
+import { changeLanguage } from "../utils/configSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
+  const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
+
+
+  const handleGPTSearch = () => {
+    //Toggle GPT Search
+    dispatch(toggleGptSearchView());
+  };
 
   const handleSignout = () => {
     signOut(auth)
-      .then(() => {
-      })
+      .then(() => {})
       .catch((err) => {
         navigate("/error");
       });
   };
+
+  const handleLangToggle = (e) => {
+    dispatch(changeLanguage(e.target.value));
+  }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -52,7 +65,21 @@ const Header = () => {
     <div className="absolute w-screen px-8 py-8 bg-gradient-to-b from-black z-10 flex justify-between">
       <img className="w-44" src={LOGO} alt="logo" />
       {user && (
-        <div>
+        <div className="flex p-2">
+          {showGptSearch && (
+            <select className="bg-white text-black py-2 px-4 mx-4 my-2 rounded-md" onChange={handleLangToggle}>
+              {SUPPORTED_LANG.map((lang) => (
+                <option key={lang.identifier} value={lang.identifier}>{lang.name}</option>
+              ))}
+            </select>
+          )}
+
+          <button
+            className="py-2 px-4 mx-4 my-2 bg-purple-800 text-white rounded-md"
+            onClick={handleGPTSearch}
+          >
+            {showGptSearch ? "Home" : "GPT Search"}
+          </button>
           <img className="w-14" src={user?.photoURL} alt="user-icon" />
           <button className="text-white" onClick={handleSignout}>
             Sign Out

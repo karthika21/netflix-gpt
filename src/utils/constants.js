@@ -9,6 +9,12 @@ export const GITHUB_PROFILE =
 
 export const MOVIE_CDN_URL = "https://image.tmdb.org/t/p/w500/";
 
+export const SUPPORTED_LANG = [
+  { identifier: "en", name: "English" },
+  { identifier: "spanish", name: "Spanish" },
+  { identifier: "tamil", name: "Tamil" },
+];
+
 export const API_OPTIONS = {
   method: "GET",
   headers: {
